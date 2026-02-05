@@ -91,16 +91,21 @@
     <div class="container">
         {% if user %}
         <nav class="navbar">
-            <ul class="nav-menu">
-                <li><a href="/home" {% if request.url.path == '/home' %}class="active"{% endif %}>Home</a></li>
-                <li><a href="/users/add" {% if '/users/add' in request.url.path %}class="active"{% endif %}>Add</a></li>
-                <li><a href="/users/manage" {% if '/users/manage' in request.url.path %}class="active"{% endif %}>Manage</a></li>
-            </ul>
-            <div class="user-info">
-                Welcome, {{ user.first_name|default(user.surname) }}!
-                <a href="#" onclick="logout()" style="color: #fbbf24; margin-left: 15px;">Logout</a>
-            </div>
-        </nav>
+    <ul class="nav-menu">
+        <li><a href="/home" {% if request.url.path == '/home' %}class="active"{% endif %}>Home</a></li>
+        
+        {# ONLY SHOW 'ADD' LINK IF LOGGED-IN USER IS ID 1 #}
+        {% if user.user_id == 1 %}
+        <li><a href="/users/add" {% if '/users/add' in request.url.path %}class="active"{% endif %}>Add</a></li>
+        {% endif %}
+        
+        <li><a href="/users/manage" {% if '/users/manage' in request.url.path %}class="active"{% endif %}>Manage</a></li>
+    </ul>
+    <div class="user-info">
+        Welcome, {{ user.first_name|default(user.surname) }}!
+        <a href="#" onclick="logout()" style="color: #fbbf24; margin-left: 15px;">Logout</a>
+    </div>
+</nav>
         {% endif %}
         
         <div class="content">

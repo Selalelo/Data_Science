@@ -97,8 +97,24 @@ def delete_user(
 ):
     """
     Delete user
-    Requires authentication
+    ONLY allows User ID 1 (Admin) to perform this action
     """
+    # 1. Check if the logged-in user is User ID 1
+    # Note: Depending on your current_user structure, it might be current_user["user_id"] or current_user.user_id
+    if current_user.get("user_id") != 1:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Permission denied: Only the primary administrator can delete users."
+        )
+
+    # 2. Prevent user from deleting themselves (optional but recommended)
+    if user_id == current_user.get("user_id"):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="You cannot delete your own administrator account."
+        )
+
+    # 3. Proceed with deletion
     success = UserService.delete_user(db, user_id)
     
     if not success:
@@ -108,6 +124,7 @@ def delete_user(
         )
     
     return None
+
 
 
 @router.get("/export/word", response_class=StreamingResponse)

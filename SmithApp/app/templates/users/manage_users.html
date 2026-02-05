@@ -39,20 +39,30 @@
         </tr>
     </thead>
     <tbody>
-        {% for user in users %}
-        <tr>
-            <td>{{ user.full_name }}</td>
-            <td>{{ user.date_of_birth }}</td>
-            <td>{{ user.province }}</td>
-            <td>{{ user.gender }}</td>
-            <td>{{ 'Yes' if user.facilitator else 'No' }}</td>
-            <td>
-                <a href="/users/edit/{{ user.user_id }}" class="btn btn-small btn-edit">Edit</a>
-                <a href="/users/delete/{{ user.user_id }}" class="btn btn-small btn-delete">Delete</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
+    {% for user_item in users %}
+    <tr>
+        <td>{{ user_item.full_name }}</td>
+        <td>{{ user_item.date_of_birth }}</td>
+        <td>{{ user_item.province }}</td>
+        <td>{{ user_item.gender }}</td>
+        <td>{{ 'Yes' if user_item.facilitator else 'No' }}</td>
+        <td>
+            {# EDIT BUTTON LOGIC #}
+            {# Show if logged-in user is Admin (ID 1) OR if the row belongs to the logged-in user #}
+            {% if user.user_id == 1 or user.user_id == user_item.user_id %}
+                <a href="/users/edit/{{ user_item.user_id }}" class="btn btn-small btn-edit">Edit</a>
+            {% endif %}
+
+            {# DELETE BUTTON LOGIC #}
+            {# Show only if logged-in user is Admin (ID 1) AND the row is NOT the Admin themselves #}
+            {% if user.user_id == 1 and user_item.user_id != 1 %}
+                <a href="/users/delete/{{ user_item.user_id }}" class="btn btn-small btn-delete">Delete</a>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</tbody>
+
 </table>
 
 <script>

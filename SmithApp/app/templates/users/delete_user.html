@@ -1,5 +1,3 @@
-ash
-
 {% extends "base.html" %}
 {% block title %}Delete User{% endblock %}
 {% block extra_css %}
@@ -26,13 +24,34 @@ ash
         <h3>User Details</h3>
         <p><strong>{{ user_data.first_name }} {{ user_data.last_name }}</strong></p>
     </div>
-    <p class="warning-text">Are you sure you want to delete this user?<br>This action cannot be undone!</p>
-    <div class="button-group">
-        <button onclick="deleteUser()" class="btn-danger">Yes, Delete</button>
-        <a href="/users/manage" class="btn btn-secondary">No, Cancel</a>
-    </div>
+
+    {# LOGIC: Only show the delete button if the logged-in user's ID is 1 #}
+    {% if user.user_id == 1 %}
+        {% if user_data.user_id == 1 %}
+            <p class="warning-text" style="color: #718096;">You cannot delete yourself, even as an Admin.</p>
+            <div class="button-group">
+                <a href="/users/manage" class="btn btn-secondary">Go Back</a>
+            </div>
+        {% else %}
+            <p class="warning-text">Are you sure you want to delete this user?<br>This action cannot be undone!</p>
+            <div class="button-group">
+                <button onclick="deleteUser()" class="btn-danger">Yes, Delete</button>
+                <a href="/users/manage" class="btn btn-secondary">No, Cancel</a>
+            </div>
+        {% endif %}
+    {% else %}
+        {# MESSAGE FOR NON-ADMINS #}
+        <div class="alert alert-error" style="background: #fff5f5; color: #c53030; padding: 15px; border-radius: 5px; border: 1px solid #feb2b2;">
+            <strong>Access Denied:</strong> You do not have permission to delete users.
+        </div>
+        <div class="button-group" style="margin-top: 20px;">
+            <a href="/users/manage" class="btn btn-secondary">Return to Management</a>
+        </div>
+    {% endif %}
+    
     <div id="errorMessage" class="alert alert-error" style="display:none; margin-top:20px;"></div>
 </div>
+
 
 <script>
 async function deleteUser() {
