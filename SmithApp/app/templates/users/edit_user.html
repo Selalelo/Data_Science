@@ -1,0 +1,78 @@
+bash
+
+{% extends "base.html" %}
+{% block title %}Edit User{% endblock %}
+{% block extra_css %}
+<style>
+    .form-container { max-width: 600px; margin: 0 auto; }
+    h1 { color: #2d3748; margin-bottom: 30px; }
+    .form-group { margin-bottom: 20px; }
+    label { display: block; margin-bottom: 5px; color: #4a5568; font-weight: 500; }
+    input { width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 5px; font-size: 16px; }
+    input:focus { outline: none; border-color: #667eea; }
+    .button-group { display: flex; gap: 10px; }
+    button { padding: 12px 30px; border: none; border-radius: 5px; font-size: 16px; font-weight: 600; cursor: pointer; }
+    .btn-primary { background: #667eea; color: white; }
+    .btn-primary:hover { background: #5a67d8; }
+    .btn-secondary { background: #718096; color: white; }
+    .btn-secondary:hover { background: #4a5568; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h1>Edit User</h1>
+    <form id="editUserForm" onsubmit="handleSubmit(event)">
+        <div class="form-group">
+            <label for="first_name">First Name *</label>
+            <input type="text" id="first_name" name="first_name" value="{{ user_data.first_name }}" required>
+        </div>
+        <div class="form-group">
+            <label for="last_name">Last Name *</label>
+            <input type="text" id="last_name" name="last_name" value="{{ user_data.last_name }}" required>
+        </div>
+        <div id="errorMessage" class="alert alert-error" style="display:none;"></div>
+        <div id="successMessage" class="alert alert-success" style="display:none;"></div>
+        <div class="button-group">
+            <button type="submit" class="btn-primary">Update</button>
+            <a href="/users/manage" class="btn-secondary" style="display:inline-block; text-align:center; line-height:45px; text-decoration:none;">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<script>
+async function handleSubmit(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    
+    const userData = {
+        first_name: formData.get('first_name'),
+        last_name: formData.get('last_name')
+    };
+    
+    try {
+        const response = await fetch('/api/users/{{ user_data.user_id }}', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(userData)
+        });
+        
+        if (response.ok) {
+            const successMsg = document.getElementById('successMessage');
+            successMsg.textContent = 'User updated successfully!';
+            successMsg.style.display = 'block';
+            setTimeout(() => { window.location.href = '/users/manage'; }, 1500);
+        } else {
+            const data = await response.json();
+            const errorMsg = document.getElementById('errorMessage');
+            errorMsg.textContent = data.detail || 'Failed to update user';
+            errorMsg.style.display = 'block';
+        }
+    } catch (error) {
+        const errorMsg = document.getElementById('errorMessage');
+        errorMsg.textContent = 'An error occurred';
+        errorMsg.style.display = 'block';
+    }
+}
+</script>
+{% endblock %}

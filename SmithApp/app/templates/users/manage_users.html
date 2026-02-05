@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Manage Users{% endblock %}
+{% block extra_css %}
+<style>
+    h1 { color: #2d3748; margin-bottom: 20px; }
+    .actions { margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+    .btn { padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; }
+    .btn:hover { background: #5a67d8; }
+    .btn-success { background: #48bb78; }
+    .btn-success:hover { background: #38a169; }
+    table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    th, td { padding: 15px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+    th { background: #f7fafc; color: #2d3748; font-weight: 600; cursor: pointer; user-select: none; }
+    th:hover { background: #edf2f7; }
+    tr:hover { background: #f7fafc; }
+    .btn-small { padding: 5px 15px; font-size: 14px; margin-right: 5px; }
+    .btn-edit { background: #4299e1; }
+    .btn-edit:hover { background: #3182ce; }
+    .btn-delete { background: #f56565; }
+    .btn-delete:hover { background: #e53e3e; }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Manage Users</h1>
+<div class="actions">
+    <span>Total Users: {{ users|length }}</span>
+    <a href="/api/users/export/word" class="btn btn-success">Export to MS Word</a>
+</div>
+<table id="usersTable">
+    <thead>
+        <tr>
+            <th onclick="sortTable(0)">Name ↕</th>
+            <th onclick="sortTable(1)">Date of Birth ↕</th>
+            <th onclick="sortTable(2)">Province ↕</th>
+            <th onclick="sortTable(3)">Gender ↕</th>
+            <th onclick="sortTable(4)">Facilitator ↕</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.full_name }}</td>
+            <td>{{ user.date_of_birth }}</td>
+            <td>{{ user.province }}</td>
+            <td>{{ user.gender }}</td>
+            <td>{{ 'Yes' if user.facilitator else 'No' }}</td>
+            <td>
+                <a href="/users/edit/{{ user.user_id }}" class="btn btn-small btn-edit">Edit</a>
+                <a href="/users/delete/{{ user.user_id }}" class="btn btn-small btn-delete">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+function sortTable(columnIndex) {
+    const table = document.getElementById('usersTable');
+    const tbody = table.querySelector('tbody');
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+    
+    rows.sort((a, b) => {
+        const aText = a.children[columnIndex].textContent.trim();
+        const bText = b.children[columnIndex].textContent.trim();
+        return aText.localeCompare(bText);
+    });
+    
+    rows.forEach(row => tbody.appendChild(row));
+}
+</script>
+{% endblock %}

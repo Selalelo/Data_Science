@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}User Management System{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .navbar {
+            background: #2d3748;
+            padding: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            margin: 0;
+        }
+        
+        .nav-menu li a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 20px 30px;
+            transition: background 0.3s;
+        }
+        
+        .nav-menu li a:hover {
+            background: #4a5568;
+        }
+        
+        .nav-menu li a.active {
+            background: #667eea;
+        }
+        
+        .user-info {
+            color: white;
+            padding: 0 30px;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .alert-success {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 1px solid #9ae6b4;
+        }
+        
+        .alert-error {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 1px solid #fc8181;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="container">
+        {% if user %}
+        <nav class="navbar">
+            <ul class="nav-menu">
+                <li><a href="/home" {% if request.url.path == '/home' %}class="active"{% endif %}>Home</a></li>
+                <li><a href="/users/add" {% if '/users/add' in request.url.path %}class="active"{% endif %}>Add</a></li>
+                <li><a href="/users/manage" {% if '/users/manage' in request.url.path %}class="active"{% endif %}>Manage</a></li>
+            </ul>
+            <div class="user-info">
+                Welcome, {{ user.first_name|default(user.surname) }}!
+                <a href="#" onclick="logout()" style="color: #fbbf24; margin-left: 15px;">Logout</a>
+            </div>
+        </nav>
+        {% endif %}
+        
+        <div class="content">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', path='/js/main.js') }}"></script>
+    <script>
+        function logout() {
+            fetch('/api/auth/logout', {
+                method: 'POST'
+            }).then(() => {
+                window.location.href = '/';
+            });
+        }
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

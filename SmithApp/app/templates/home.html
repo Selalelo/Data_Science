@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Home - User Management System{% endblock %}
+{% block extra_css %}
+<style>
+    .welcome-section {
+        text-align: center;
+        padding: 60px 20px;
+    }
+    .welcome-section h1 {
+        color: #2d3748;
+        font-size: 48px;
+        margin-bottom: 20px;
+    }
+    .welcome-section p {
+        color: #4a5568;
+        font-size: 20px;
+        margin-bottom: 40px;
+    }
+    .welcome-image {
+        max-width: 600px;
+        margin: 0 auto;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    .welcome-image img {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+    }
+    .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        margin-top: 60px;
+    }
+    .feature-card {
+        background: #f7fafc;
+        padding: 30px;
+        border-radius: 10px;
+        text-align: center;
+        transition: transform 0.3s;
+    }
+    .feature-card:hover { transform: translateY(-5px); }
+    .feature-card h3 {
+        color: #2d3748;
+        margin-bottom: 10px;
+    }
+    .feature-card p { color: #718096; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="welcome-section">
+    <h1>Welcome to User Management System</h1>
+    <p>Manage your users efficiently and effectively</p>
+    
+    <div class="welcome-image">
+        <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=800" alt="Team collaboration">
+    </div>
+    
+    <div class="features">
+        <div class="feature-card">
+            <h3>Add Users</h3>
+            <p>Easily add new users with comprehensive details</p>
+        </div>
+        <div class="feature-card">
+            <h3>Manage Users</h3>
+            <p>View, edit, and delete users in a sortable grid</p>
+        </div>
+        <div class="feature-card">
+            <h3>Export Reports</h3>
+            <p>Generate MS Word reports of your user data</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
